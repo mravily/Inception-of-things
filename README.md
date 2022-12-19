@@ -16,3 +16,5 @@ Last but not least, you will discover K3d that will simplify your life.
 
 [Vboxmanage Documentation (EN)](https://www.virtualbox.org/manual/ch08.html#vboxmanage-unregistervm)
 
+[SSH login without password (EN)](http://www.linuxproblem.org/art_9.html)
+
