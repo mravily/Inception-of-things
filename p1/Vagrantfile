@@ -1,38 +1,48 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+IP_SERVER = '192.168.56.110'
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure("2") do |config|
- 
-  # Every Vagrant development environment requires a box. You can search for
-  # boxes at https://vagrantcloud.com/search.
-  config.vm.box = "ubuntu/focal64"
+	# What box is used for the create the VM
+	config.vm.box = "roboxes/alpine317"
 
-# Config mravilyServer vagrang box
-  config.vm.define "mravilyS" do |control|
-		# Define hostname 
-		control.vm.hostname = "mravilyS"
-		control.vm.network "private_network", hostname: true, ip: "192.168.56.110"
-		control.vm.provider "virtualbox" do |vb|
-			vb.memory = 512
-			vb.cpus = 1
-			vb.name = "mravilyS"
-		end
-		config.vm.provision "file", source: "scripts/grub", destination: "/tmp/grub"
-		config.vm.provision "shell", inline: <<-SHELL
-			mv -f /tmp/grub /etc/default/grub
-			update-grub
-			apt install net-tools
-		SHELL
+	# Define the VM's configs
+	config.vm.provider "virtualbox" do |vb|
+		vb.memory = 1024
+		vb.cpus = 2
+		# # Copy the host public key for authorize ssh connection without password
+		# id_rsa_pub = File.read("#{Dir.home}/.ssh/test.pub")
+  		# config.vm.provision "copy ssh public key", type: "shell",
+    	#   inline: "echo \"#{id_rsa_pub}\" >> /home/vagrant/.ssh/authorized_keys"
 	end
-  #
-  # View the documentation for the provider you are using for more
-  # information on available options.
 
-  # Enable provisioning with a shell script. Additional provisioners such as
-  # Ansible, Chef, Docker, Puppet and Salt are also available. Please see the
-  # documentation for more information about their specific syntax and use.
+	# Config mravilyServer vagrang box
+	config.vm.define "mravilyS" do |mravilyS|
+		# Change the hostname 
+		mravilyS.vm.hostname = "mravilyS"
+		mravilyS.ssh.insert_key = false																				# Disable the automatic vagrant replace pair keys
+		mravilyS.ssh.private_key_path = [ "confs/id_rsa", "~/.vagrant.d/insecure_private_key"]						# Indicate the path of the private keys
+		mravilyS.vm.provision "file", source: "confs/id_rsa.pub", destination: "~/.ssh/authorized_keys" 			# Add the public key to authorized keys
+		mravilyS.vm.network "private_network", hostname: true, ip: IP_SERVER										# Setup the private network with the hostname and selected ip
+		mravilyS.vm.provision "file", source: "confs/id_rsa", destination: "/home/vagrant/.ssh/id_rsa"				# Private Key Provisioning
+		mravilyS.vm.provision "file", source: "confs/id_rsa.pub", destination: "/home/vagrant/.ssh/id_rsa.pub"		# Public Key Provisioning
+		mravilyS.vm.provision "shell", privileged: true, path: "scripts/server.sh", args: [IP_SERVER]
+
+	end
+
+	# # Config mravilyServer vagrang box
+	# config.vm.define "mravilySW" do |mravilySW|
+	# 	# Change the hostname 
+	# 	mravilySW.vm.hostname = "mravilySW"
+	# 	# Setup the private network with the hostname and selected ip
+	# 	mravilySW.vm.network "private_network", hostname: true, ip: "192.168.56.111"
+	# 	# Shell script provisioning
+	# 	mravilySW.vm.provision "shell", path: "scripts/k3s.sh"
+	# end
+
 end
+
