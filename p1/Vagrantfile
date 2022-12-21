@@ -9,11 +9,12 @@ IP_WORKER = '192.168.56.111'
 # you're doing.
 Vagrant.configure("2") do |config|
 	# What box is used for the create the VM
-	config.vm.box = "ubuntu/bionic64"
+	config.vm.box = "hashicorp/bionic64"
+	config.vm.box_version = "1.0.282"
 
 	# Define the VM's configs
 	config.vm.provider "virtualbox" do |vb|
-		vb.memory = 1024
+		vb.memory = 2048
 		vb.cpus = 2
 	end
 
@@ -21,6 +22,8 @@ Vagrant.configure("2") do |config|
 	config.vm.define "mravilyS" do |mravilyS|
 		# Change the hostname
 		mravilyS.vm.hostname = "mravilyS"
+		# Setup the private network with the hostname and selected ip
+		mravilyS.vm.network "private_network", hostname: true, ip: IP_SERVER
 		# Disable the automatic vagrant replace pair keys
 		mravilyS.ssh.insert_key = false
 		# Add the public key to authorized keys
@@ -29,10 +32,8 @@ Vagrant.configure("2") do |config|
 		mravilyS.vm.provision "file", source: "confs/id_rsa", destination: "~/.ssh/id_rsa"
 		# Public Key Provisioning
 		mravilyS.vm.provision "file", source: "confs/id_rsa.pub", destination: "~/.ssh/id_rsa.pub"
-		# File provisioning
+		# File provisioning	
 		mravilyS.vm.provision "shell", privileged: true, path: "scripts/server.sh", args: [IP_SERVER]
-		# Setup the private network with the hostname and selected ip
-		mravilyS.vm.network "private_network", hostname: true, ip: IP_SERVER
 	end
 
 	# Config mravilyServerWorker vagrant box
@@ -41,15 +42,15 @@ Vagrant.configure("2") do |config|
 		mravilySW.vm.hostname = "mravilySW"
 		# Disable the automatic vagrant replace pair keys
 		mravilySW.ssh.insert_key = false
+		# Setup the private network with the hostname and selected ip
+		mravilySW.vm.network "private_network", hostname: true, ip: IP_WORKER
 		# Add the public key to authorized keys
 		mravilySW.vm.provision "file", source: "confs/id_rsa.pub", destination: "~/.ssh/authorized_keys"
-		# Setup the private network with the hostname and selected ip
 		# Private Key Provisioning
 		mravilySW.vm.provision "file", source: "confs/id_rsa", destination: "~/.ssh/id_rsa"
 		# Public Key Provisioning
 		mravilySW.vm.provision "file", source: "confs/id_rsa.pub", destination: "~/.ssh/id_rsa.pub"
 		# Provisioning and execute script
 		mravilySW.vm.provision "shell", privileged: true, path: "scripts/worker.sh", args: [IP_SERVER, IP_WORKER]
-		mravilySW.vm.network "private_network", hostname: true, ip: IP_WORKER
 	end
 end
