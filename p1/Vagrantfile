@@ -2,13 +2,14 @@
 # vi: set ft=ruby :
 
 IP_SERVER = '192.168.56.110'
+IP_WORKER = '192.168.56.111'
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
 # configures the configuration version (we support older styles for
 # backwards compatibility). Please don't change it unless you know what
 # you're doing.
 Vagrant.configure("2") do |config|
 	# What box is used for the create the VM
-	config.vm.box = "roboxes/alpine317"
+	config.vm.box = "ubuntu/bionic64"
 
 	# Define the VM's configs
 	config.vm.provider "virtualbox" do |vb|
@@ -16,18 +17,39 @@ Vagrant.configure("2") do |config|
 		vb.cpus = 2
 	end
 
-	# Config mravilyServer vagrang box
+	# Config mravilyServer vagrant box
 	config.vm.define "mravilyS" do |mravilyS|
-		mravilyS.vm.hostname = "mravilyS"																			# Chnage the hostname
-		mravilyS.ssh.insert_key = false																				# Disable the automatic vagrant replace pair keys
-		mravilyS.ssh.private_key_path = [ "confs/id_rsa", "~/.vagrant.d/insecure_private_key"]						# Indicate the path of the private keys
-		mravilyS.vm.provision "file", source: "confs/id_rsa.pub", destination: "~/.ssh/authorized_keys" 			# Add the public key to authorized keys
-		mravilyS.vm.network "private_network", hostname: true, ip: IP_SERVER										# Setup the private network with the hostname and selected ip
-		mravilyS.vm.provision "file", source: "confs/id_rsa", destination: "/home/vagrant/.ssh/id_rsa"				# Private Key Provisioning
-		mravilyS.vm.provision "file", source: "confs/id_rsa.pub", destination: "/home/vagrant/.ssh/id_rsa.pub"		# Public Key Provisioning
-		mravilyS.vm.provision "shell", privileged: true, path: "scripts/server.sh", args: [IP_SERVER]				# Provisioning and execute script
-
+		# Change the hostname
+		mravilyS.vm.hostname = "mravilyS"
+		# Disable the automatic vagrant replace pair keys
+		mravilyS.ssh.insert_key = false
+		# Add the public key to authorized keys
+		mravilyS.vm.provision "file", source: "confs/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+		# Private Key Provisioning
+		mravilyS.vm.provision "file", source: "confs/id_rsa", destination: "~/.ssh/id_rsa"
+		# Public Key Provisioning
+		mravilyS.vm.provision "file", source: "confs/id_rsa.pub", destination: "~/.ssh/id_rsa.pub"
+		# File provisioning
+		mravilyS.vm.provision "shell", privileged: true, path: "scripts/server.sh", args: [IP_SERVER]
+		# Setup the private network with the hostname and selected ip
+		mravilyS.vm.network "private_network", hostname: true, ip: IP_SERVER
 	end
 
+	# Config mravilyServerWorker vagrant box
+	config.vm.define "mravilySW" do |mravilySW|
+		# Change the hostname
+		mravilySW.vm.hostname = "mravilySW"
+		# Disable the automatic vagrant replace pair keys
+		mravilySW.ssh.insert_key = false
+		# Add the public key to authorized keys
+		mravilySW.vm.provision "file", source: "confs/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+		# Setup the private network with the hostname and selected ip
+		# Private Key Provisioning
+		mravilySW.vm.provision "file", source: "confs/id_rsa", destination: "~/.ssh/id_rsa"
+		# Public Key Provisioning
+		mravilySW.vm.provision "file", source: "confs/id_rsa.pub", destination: "~/.ssh/id_rsa.pub"
+		# Provisioning and execute script
+		mravilySW.vm.provision "shell", privileged: true, path: "scripts/worker.sh", args: [IP_SERVER, IP_WORKER]
+		mravilySW.vm.network "private_network", hostname: true, ip: IP_WORKER
+	end
 end
-
