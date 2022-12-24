@@ -1,0 +1,39 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+IP_SERVER = '192.168.56.110'
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+	# What box is used for the create the VM
+	config.vm.box = "ubuntu/focal64"
+
+	# Define the VM's configs
+	config.vm.provider "virtualbox" do |vb|
+		vb.memory = 2048
+		vb.cpus = 2
+	end
+
+	# Config mravilyServer vagrant box
+	config.vm.define "mravilyS" do |mravilyS|
+		# Change the hostname
+		mravilyS.vm.hostname = "mravilyS"
+		# Setup the private network with the hostname and selected ip
+		mravilyS.vm.network "private_network", hostname: true, ip: IP_SERVER
+		# Disable the automatic vagrant replace pair keys
+		mravilyS.ssh.insert_key = false
+		# Add the public key to authorized keys
+		mravilyS.vm.provision "file", source: "confs/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+		# Private Key Provisioning
+		mravilyS.vm.provision "file", source: "confs/id_rsa", destination: "~/.ssh/id_rsa"
+		# Public Key Provisioning
+		mravilyS.vm.provision "file", source: "confs/id_rsa.pub", destination: "~/.ssh/id_rsa.pub"
+		# Provisioning manifest
+		mravilyS.vm.provision "file", source: "confs/apps.yaml", destination: "~/confs/"
+		mravilyS.vm.provision "file", source: "confs/ingress.yaml", destination: "~/confs/"
+		# Script Shell provisioning	
+		mravilyS.vm.provision "shell", privileged: true, path: "scripts/server.sh", args: [IP_SERVER]
+	end
+end
