@@ -1,19 +1,18 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress-controller
+  name: ingress-host
+  namespace: hello-kubernetes
 spec:
+  # This should be the correct way from the documentation to specify the default backend when no rules matches
+  # but traefik seems to have bad time handling `rules` & `defaultBackend` together:
+  # defaultBackend:
+  #   service:
+  #     name: app-three
+  #     port:
+  #       number: 80
   rules:
-  - http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: app-three
-            port:
-              number: 80
-  - host: app1.com
+  - host: "app1.com"
     http:
       paths:
       - path: /
@@ -22,8 +21,8 @@ spec:
           service:
             name: app-one
             port:
-              number: 80
-  - host: app2.com
+              name: http
+  - host: "app2.com"
     http:
       paths:
       - path: /
@@ -32,4 +31,14 @@ spec:
           service:
             name: app-two
             port:
-              number: 80
+              name: http
+  - http:
+    paths:
+    - path: /
+      pathType: Prefix
+      backend:
+        service:
+          name: app-three
+          port:
+            name: http
+

@@ -11,6 +11,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: app-one
+  namespace: hello-kubernetes
 spec:
   replicas: 1
   selector:
@@ -25,31 +26,19 @@ spec:
       - name: hello-kubernetes
         image: paulbouwer/hello-kubernetes:1.10
         ports:
-        - containerPort: 8080
+        - name: http
+          containerPort: 80
         env:
         - name: MESSAGE
           value: Hello from app1.
       
 ---
 
-apiVersion: v1
-kind: Service
-metadata:
-  name: app-one
-spec:
-  selector:
-    app: app-one
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
-
----
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: app-two
+  namespace: hello-kubernetes
 spec:
   replicas: 3
   selector:
@@ -64,24 +53,11 @@ spec:
       - name: hello-kubernetes
         image: paulbouwer/hello-kubernetes:1.10
         ports:
-        - containerPort: 8080
+        - name: http
+          containerPort: 80
         env:
         - name: MESSAGE
           value: Hello from app2.
-
----
-
-apiVersion: v1 
-kind: Service
-metadata:
-  name: app-two
-spec:
-  selector:
-    app: app-two
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
 
 ---
 
@@ -89,6 +65,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: app-three
+  namespace: hello-kubernetes
 spec:
   replicas: 1
   selector:
@@ -103,21 +80,8 @@ spec:
       - name: hello-kubernetes
         image: paulbouwer/hello-kubernetes:1.10
         ports:
-        - containerPort: 8080
+        - name: http
+          containerPort: 80
         env:
         - name: MESSAGE
           value: Hello from app3.
-
----
-
-apiVersion: v1 
-kind: Service
-metadata:
-  name: app-three
-spec:
-  selector:
-    app: app-three
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8080
