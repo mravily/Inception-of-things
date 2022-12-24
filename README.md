@@ -18,3 +18,9 @@ Last but not least, you will discover K3d that will simplify your life.
 
 [SSH login without password (EN)](http://www.linuxproblem.org/art_9.html)
 
+[Kubernetes Reference Documentation](https://jamesdefabia.github.io/docs/reference/)
+
+[API Convention](https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status)
+
+[Customise Hello K8S](https://github.com/cloudogu/hello-k8s)
+
