@@ -1,0 +1,6 @@
+[submodule "p3/mravily-argo-cd"]
+	path = p3/mravily-argo-cd
+	url = git@github.com:mravily/mravily-argo-cd.git
+[submodule "p3/confs/parrot"]
+	path = p3/confs/parrot
+	url = https://github.com/mravily/parrot.git
