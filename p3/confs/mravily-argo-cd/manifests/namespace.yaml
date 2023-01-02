@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev
+  label:
+    app: web
+
+--- 
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: argocd
+
