@@ -1,0 +1,49 @@
+- name: Inception of Things Playbook
+  hosts: g_p3
+  become: true
+  tasks:
+    - name: Install aptitude
+      apt:
+        name: aptitude
+        state: latest
+        update_cache: true
+
+    - name: Install required system packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+        state: latest
+        update_cache: true
+    
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+
+    - name: Download K3D Engine and execute install script
+      shell: curl -s {{ k3d_url }} | bash
+    
+    - name: Download IoT Project from GitHub
+      ansible.builtin.git:
+        repo: https://github.com/mravily/Inception-of-things.git
+        dest: /src/IoT
+    
+    # - name: Use autorun script
+    #   shell: sh /src/IoT/p3/scripts/autorun.sh
