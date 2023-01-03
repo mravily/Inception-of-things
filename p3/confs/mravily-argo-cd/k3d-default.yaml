@@ -8,9 +8,9 @@ agents: 2 # same as `--agents 2`
 kubeAPI: # same as `--api-port myhost.my.domain:6445` (where the name would resolve to 127.0.0.1)
   hostIP: "127.0.0.1" # where the Kubernetes API will be listening on
   hostPort: "6445" # where the Kubernetes API listening port will be mapped to on your host system
-image: rancher/k3s:v1.20.4-k3s1 # same as `--image rancher/k3s:v1.20.4-k3s1`
+image: rancher/k3s:v1.22.17-k3s1 # same as `--image rancher/k3s:v1.20.4-k3s1`
 volumes: # repeatable flags are represented as YAML lists
-  - volume: $PWD/manifest/:/var/lib/rancher/k3s/server/manifests/ # same as `--volume '/my/host/path:/path/in/node@server:0;agent:*'`
+  - volume: /src/IoT/p3/confs/mravily-argo-cd/manifest/:/var/lib/rancher/k3s/server/manifests/ # same as `--volume '/my/host/path:/path/in/node@server:0;agent:*'`
     nodeFilters:
       - server:*
 ports:
