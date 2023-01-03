@@ -1,3 +1,7 @@
 [submodule "p3/confs/parrot"]
 	path = p3/confs/parrot
 	url = https://github.com/mravily/parrot.git
+
+[submodule "p3/confs/mravily-argo-cd"]
+	path = p3/confs/mravily-argo-cd
+	url = https://github.com/mravily/mravily-argo-cd.git
