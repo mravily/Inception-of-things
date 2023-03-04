@@ -22,14 +22,8 @@ Vagrant.configure("2") do |config|
 		mravilyS.vm.hostname = "mravilyS"
 		# Setup the private network with the hostname and selected ip
 		mravilyS.vm.network "private_network", hostname: true, ip: IP_SERVER
-		# Disable the automatic vagrant replace pair keys
-		# mravilyS.ssh.insert_key = false
-		# Add the public key to authorized keys
-		# mravilyS.vm.provision "file", source: "confs/id_rsa.pub", destination: "~/.ssh/authorized_keys"
-		# # Private Key Provisioning
-		# mravilyS.vm.provision "file", source: "confs/id_rsa", destination: "~/.ssh/id_rsa"
 		# # Public Key Provisioning
-		# mravilyS.vm.provision "file", source: "confs/id_rsa.pub", destination: "~/.ssh/id_rsa.pub"
+		mravilyS.vm.provision "file", source: "confs/id_rsa.pub", destination: "~/.ssh/id_rsa.pub"
 		# Provisioning manifest
 		mravilyS.vm.provision "file", source: "confs/service.yaml", destination: "~/confs/"
 		mravilyS.vm.provision "file", source: "confs/ingress.yaml", destination: "~/confs/"
