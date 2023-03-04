@@ -1,5 +1,0 @@
-all:
-  children:
-    g_p3:
-      hosts:
-        p3:
