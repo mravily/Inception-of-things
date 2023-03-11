@@ -23,15 +23,18 @@ Vagrant.configure("2") do |config|
 		p3.vm.hostname = "p3"
 		# Setup the private network with the hostname and selected ip
 		p3.vm.network "private_network", hostname: true, ip: IP_NODE
-	# Disable the automatic vagrant replace pair keys
+		# Disable the automatic vagrant replace pair keys
 		p3.ssh.insert_key = false
+		# Overide Authorized Keys File
+		p3.ssh.private_key_path = ["~/.vagrant.d/insecure_private_key", "confs/id_rsa"]
+		# Public Key Provisioning
+		p3.vm.provision "file", source: "confs/id_rsa.pub", destination: "~/.ssh/id_rsa.pub"
 		# Add the public key to authorized keys
-		p3.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/id_rsa.pub"
-		# # Private Key Provisioning
-		# # Public Key Provisioning
-		# p3.vm.provision "file", source: "confs/id_rsa.pub", destination: "~/.ssh/id_rsa.pub"
+		p3.vm.provision "file", source: "confs/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+		# Provisioning manifest and scripts
 		p3.vm.provision "file", source: "confs/mravily-argo-cd", destination: "~/argo-cd"
 		p3.vm.provision "file", source: "scripts/", destination: "~/scripts"
+		# Provisioning and execute script
 		p3.vm.provision "shell", path: "scripts/config-vm.sh"
 	end
 end
