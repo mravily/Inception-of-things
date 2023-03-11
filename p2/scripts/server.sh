@@ -11,4 +11,10 @@ sudo cp -f .ssh/* /root/.ssh/
 # Install mandatory dependencies for k3s and start the cluster
 curl -sfL https://get.k3s.io | sh -
 
-kubectl apply -f /vagrant/confs/.
+cp -R /vagrant/confs/. /var/lib/rancher/k3s/server/manifests/
+       
+sleep 10
+
+kubectl wait deploy/app-one --for condition=available --timeout=120s
+kubectl wait deploy/app-two --for condition=available --timeout=120s
+kubectl wait deploy/app-three --for condition=available --timeout=120s
